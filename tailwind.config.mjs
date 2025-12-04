@@ -18,6 +18,10 @@ export default {
           900: "#1e3a8a",
         },
       },
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
+      },
     },
   },
   plugins: [],
