@@ -10,16 +10,58 @@ const currentPath = new URL(Astro.request.url).pathname;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>LearnLite</title>
+      <!-- Google Fonts: Poppins and Inter -->
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
   </head>
   <body class="min-h-screen bg-gray-100 dark:bg-gray-900 font-sans">
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-3 flex items-center justify-between">
-      <h1 class="text-xl font-bold text-gray-900 dark:text-white">LearnLite</h1>
+    <header class="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 sm:px-6 py-3 flex items-center justify-between">
+      <h1 class="text-xl font-bold text-gray-900 dark:text-white font-poppins">LearnLite</h1>
+      <!-- Hamburger button (mobile only) -->
+      <button 
+        id="menu-toggle" 
+        class="md:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+      >
+        <svg id="menu-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+        <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
     </header>
 
+    <!-- Mobile navigation overlay -->
+    <div id="mobile-nav" class="fixed inset-0 z-40 hidden md:hidden">
+      <div id="nav-backdrop" class="absolute inset-0 bg-black/50"></div>
+      <nav class="absolute top-[57px] right-0 w-64 h-[calc(100vh-57px)] bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 p-6 flex flex-col gap-3 text-gray-700 dark:text-gray-300 font-inter shadow-xl">
+        <a 
+          href="/" 
+          class={currentPath === "/" ? "text-blue-600 dark:text-blue-400 font-semibold" : "hover:text-gray-900 dark:hover:text-white"}
+        >
+          Dashboard
+        </a>
+        <a 
+          href="/schedule" 
+          class={currentPath === "/schedule" ? "text-blue-600 dark:text-blue-400 font-semibold" : "hover:text-gray-900 dark:hover:text-white"}
+        >
+          Schedule
+        </a>
+        <a 
+          href="/resources" 
+          class={currentPath === "/resources" ? "text-blue-600 dark:text-blue-400 font-semibold" : "hover:text-gray-900 dark:hover:text-white"}
+        >
+          Resources
+        </a>
+      </nav>
+    </div>
+
     <div class="flex min-h-[calc(100vh-57px)]">
-      <aside class="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 flex flex-col">
-        <nav class="flex flex-col gap-3 text-gray-700 dark:text-gray-300">
+      <!-- Desktop sidebar (hidden on mobile) -->
+      <aside class="hidden md:flex w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 p-6 flex-col">
+        <nav class="flex flex-col gap-3 text-gray-700 dark:text-gray-300 font-inter">
           <a 
             href="/" 
             class={currentPath === "/" ? "text-blue-600 dark:text-blue-400 font-semibold" : "hover:text-gray-900 dark:hover:text-white"}
@@ -42,9 +84,28 @@ const currentPath = new URL(Astro.request.url).pathname;
 
       </aside>
 
-      <main class="flex-1 p-8">
+      <main class="flex-1 p-4 sm:p-6 md:p-8">
         <slot />
       </main>
     </div>
+
+    <script>
+      const menuToggle = document.getElementById('menu-toggle');
+      const mobileNav = document.getElementById('mobile-nav');
+      const menuIcon = document.getElementById('menu-icon');
+      const closeIcon = document.getElementById('close-icon');
+      const navBackdrop = document.getElementById('nav-backdrop');
+
+      function toggleMenu() {
+        const isOpen = !mobileNav?.classList.contains('hidden');
+        mobileNav?.classList.toggle('hidden');
+        menuIcon?.classList.toggle('hidden');
+        closeIcon?.classList.toggle('hidden');
+        menuToggle?.setAttribute('aria-expanded', String(!isOpen));
+      }
+
+      menuToggle?.addEventListener('click', toggleMenu);
+      navBackdrop?.addEventListener('click', toggleMenu);
+    </script>
   </body>
 </html>
